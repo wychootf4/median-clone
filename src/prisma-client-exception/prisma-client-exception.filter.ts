@@ -22,7 +22,7 @@ export class PrismaClientExceptionFilter extends BaseExceptionFilter {
         });
         break;
       }
-      case '2025': {
+      case 'P2025': {
         const status = HttpStatus.NOT_FOUND;
         response.status(status).json({
           statusCode: status,
