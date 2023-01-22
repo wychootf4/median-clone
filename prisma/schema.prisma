@@ -1,8 +1,10 @@
 // This is your Prisma schema file,
 // learn more about it in the docs: https://pris.ly/d/prisma-schema
 
+// community generators: https://www.prisma.io/docs/concepts/components/prisma-schema/generators#community-generators
 generator client {
-  provider = "prisma-client-js"
+  provider      = "prisma-client-js"
+  binaryTargets = ["native"]
 }
 
 datasource db {
@@ -18,4 +20,74 @@ model Article {
   published   Boolean  @default(false)
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
+}
+
+/// This comment will get attached to the `User` node in the AST
+model User {
+  /// This comment will get attached to the `id` node in the AST
+  id           Int      @id @default(autoincrement())
+  createdAt    DateTime @default(now())
+  email        String?
+  // This comment is for reader's clarity
+  firstName    String?
+  lastName     String?
+  isAdmin      Boolean  @default(false)
+  role         Role     @default(USER)
+  writtenPosts Post[]   @relation("WrittenPost")
+  pinnedPost   Post?    @relation("PinnedPost")
+  Profile      Profile?
+  postId       Int?
+
+  @@unique([firstName, lastName])
+}
+
+model Profile {
+  id     Int    @id @default(autoincrement())
+  bio    String
+  user   User   @relation(fields: [userId], references: [id])
+  userId Int    @unique
+}
+
+model Post {
+  id         Int        @id @default(autoincrement())
+  createdAt  DateTime   @default(now())
+  updatedAt  DateTime   @updatedAt
+  published  Boolean    @default(false)
+  title      String     @db.VarChar(255)
+  author     User       @relation("WrittenPost", fields: [authorId], references: [id])
+  authorId   Int // relation scalar field (used in the @relation attribute above)
+  content    String?
+  categories Category[]
+  comments   Comment[] // A post can have many comments
+  keywords   String[]
+  pinnedBy   User?      @relation(name: "PinnedPost", fields: [pinnedById], references: [id])
+  pinnedById Int?       @unique
+
+  @@index([title, content])
+}
+
+model Category {
+  id    Int    @id @default(autoincrement())
+  name  String
+  posts Post[]
+}
+
+model Comment {
+  // Fields
+  id      Int     @id @default(autoincrement())
+  title   String
+  content String?
+  Post    Post?   @relation(fields: [postId], references: [id]) // A comment can have one post
+  postId  Int
+
+  @@map("comments")
+}
+
+model Tag {
+  name String @id
+}
+
+enum Role {
+  USER
+  ADMIN
 }

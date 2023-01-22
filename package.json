@@ -18,10 +18,11 @@
     "test:cov": "jest --coverage",
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
     "test:e2e": "jest --config ./test/jest-e2e.json",
-    "generate:module": "npx nest generate module",
-    "generate:service": "npx nest generate service",
-    "generate:resource": "npx nest generate resource",
-    "generate:filter": "npx nest generate filter"
+    "generate:prisma-generate": "npx prisma generate",
+    "generate:nest-module": "npx nest generate module",
+    "generate:nest-service": "npx nest generate service",
+    "generate:nest-resource": "npx nest generate resource",
+    "generate:nest-filter": "npx nest generate filter"
   },
   "dependencies": {
     "@nestjs/common": "^9.0.0",
